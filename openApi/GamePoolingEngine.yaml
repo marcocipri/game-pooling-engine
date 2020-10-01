@@ -292,6 +292,7 @@ components:
         - status
         - starting
         - ending
+        - gametype
       properties:
         id:
           type: string
@@ -302,6 +303,9 @@ components:
         description:
           type: string
           example: Lemon Water
+        gametype:
+          type: string
+          example: bingo75
         status:
           type: string
           example: starting
@@ -321,18 +325,24 @@ components:
         id:
           type: integer
           example: 400
+        user:
+          type: string
+          example: marcocipri@gmail.com
         name:
           type: string
           example: Lemon Water
         description:
           type: string
           example: Lemon Water
-        image_title:
+        order:
+          type: integer
+          example: 12
+        move:
           type: string
-          example: mineral-water-lemon-lime
-        image:
+          example: bingo card or card set or......
+        gametype:
           type: string
-          example: https://hplussport.com/images/1234
+          example: bingo75
     Snapshot:
       type: object
       required: 
