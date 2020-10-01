@@ -1,0 +1,405 @@
+openapi: 3.0.0
+info:
+  title: game pooling engine
+  version: 1.0.0
+paths:
+
+  /round:
+    post:
+      description: set a round action (spin, suspend, reset)
+      parameters: 
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoundCommand'
+      responses:
+        200:
+          description: The product has been created.
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+        500:
+          $ref: '#/components/responses/500ApiError' 
+    put:
+      description: creates a new round
+      parameters: 
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Round'
+      responses:
+        200:
+          description: The product has been created.
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+        500:
+          $ref: '#/components/responses/500ApiError'
+        
+  /round/{roundId}:
+    get:
+      description: gets the round final status after the spin
+      parameters: 
+        - in: path
+          name: roundId
+          required: true
+          schema:
+            type: integer
+            example: 12345
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      responses:
+        200:
+          description: the final status 
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        500:
+          $ref: '#/components/responses/500ApiError'
+  /events/{roundId}:
+    delete:
+      description: remove all events in a round
+      parameters: 
+        - in: path
+          name: roundId
+          description: the round
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: The product has been created.
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+        500:
+          $ref: '#/components/responses/500ApiError'
+
+    description: gets the current events collection in the same round
+    get:
+      parameters: 
+        - in: path
+          name: roundId
+          description: gets the list of the events in a round
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      responses:
+        200:
+          description: This is a list of the products in the catalog
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Round'
+        500:
+          $ref: '#/components/responses/500ApiError'
+    put:
+      parameters: 
+        - in: path
+          name: roundId
+          description: gets the list of the events in a round
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Event'
+      responses:
+        200:
+          description: This is a list of the products in the catalog
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        500:
+          $ref: '#/components/responses/500ApiError'
+       
+  /events:
+    put:
+      description: put an event in a round
+      parameters: 
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      requestBody:
+        content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+      responses:
+        200:
+          description: The product has been created.
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+        500:
+          $ref: '#/components/responses/500ApiError'
+ 
+
+          
+  /event/{roundId}/{eventId}:
+    delete:
+      description: remove a event in a round
+      parameters: 
+        - in: path
+          name: roundId
+          description: the round
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: eventId
+          description: the round
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      responses:
+        200:
+          description: The product has been created.
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+        500:
+          $ref: '#/components/responses/500ApiError'
+    get:
+      description: Page number to return
+      parameters: 
+        - in: path
+          name: roundId
+          description: Page number to return
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - in: path
+          name: eventId
+          description: Number of results in the page
+          required: true
+          schema:
+            type: integer
+            example: 10
+            maximum: 100
+        - in: header
+          name: Transaction-Id
+          required: false
+          schema:
+            type: integer
+            example: 123123234232323
+      responses:
+        200:
+          description: This is a list of the products in the catalog
+          headers:
+            transactionId:
+              schema:
+                type: integer
+                example: 12222222222
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Round'
+        500:
+          $ref: '#/components/responses/500ApiError'
+components:
+  schemas:
+    Round:
+      type: object
+      required: 
+        - id
+        - name
+        - description
+        - status
+        - starting
+        - ending
+      properties:
+        id:
+          type: string
+          example: 400
+        name:
+          type: string
+          example: Lemon Water
+        description:
+          type: string
+          example: Lemon Water
+        status:
+          type: string
+          example: starting
+        starting:
+          type: integer
+          description: datetime beginning of the events acceptance, epoch millis
+          example: 1601552565
+        ending:
+          type: integer
+          description: datetime ending of the events acceptance, epoch millis
+          example: 1601552565
+    Event:
+      type: object
+      required: 
+        - name
+      properties:
+        id:
+          type: integer
+          example: 400
+        name:
+          type: string
+          example: Lemon Water
+        description:
+          type: string
+          example: Lemon Water
+        image_title:
+          type: string
+          example: mineral-water-lemon-lime
+        image:
+          type: string
+          example: https://hplussport.com/images/1234
+    Snapshot:
+      type: object
+      required: 
+        - name
+      properties:
+        id:
+          type: integer
+          example: 400
+        name:
+          type: string
+          example: Lemon Water
+        description:
+          type: string
+          example: Lemon Water
+        image_title:
+          type: string
+          example: mineral-water-lemon-lime
+        image:
+          type: string
+          example: https://hplussport.com/images/1234
+
+
+    RoundCommand:
+      type: object
+      required: 
+        - command
+        - round
+      properties:
+        command:
+          type: string
+          example: spin, rank, clean
+        round:
+          items:
+            $ref: '#/components/schemas/Round'
+        environment:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoundEnvironmentField'
+
+    RoundEnvironmentField:
+      type: object
+      required: 
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          example: pointUser1
+        value:
+          type: string
+          example: 100
+        description:
+          type: string
+          example: current point user1
+                   
+
+  responses:
+    500ApiError:
+      description: This is an unexpected error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: string
+                example: 500
+              message:
+                type: string
+                example: This is an error
