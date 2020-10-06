@@ -8,6 +8,11 @@ GO_TEST_DIRS := $(shell \
 	xargs -I {} dirname {}  | \
 	uniq)
 
+GO_PACKAGE_NAME := $(shell \
+	git config remote.origin.url | sed -E 's~https://(\.)?([^:]+).git~\2~' \
+	)
+
+
 # Shows the variables we just set.
 # By prepending `@` we prevent Make
 # from printing the command before the
@@ -36,8 +41,29 @@ fmt: $(GO_SRC_DIRS)
 		popd > /dev/null ; \
 	done;
 
-generate.c: test.o
-	@echo make generate
 
-test.o: test.c
-	@echo make test
+build: module_init
+	go build -o bin/main main.go
+
+run: module_init
+	go run main.go
+
+
+compile:
+	echo "Compiling for every OS and Platform"
+	GOOS=linux GOARCH=arm go build -o bin/main-linux-arm main.go
+	GOOS=linux GOARCH=arm64 go build -o bin/main-linux-arm64 main.go
+	GOOS=freebsd GOARCH=386 go build -o bin/main-freebsd-386 main.go
+
+test: module_init
+	go test
+
+all:  build
+
+clean:
+	rm go.mod
+
+
+module_init: clean
+	echo "initialization of the local go module"
+	go mod init $(GO_PACKAGE_NAME) 
